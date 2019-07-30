@@ -1,0 +1,57 @@
+trigger:
+  branches:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - .appveyor.yml
+    - .travis.yml
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+jobs:
+- job: Build
+  strategy:
+    matrix:
+#      Debug:
+#        Configuration: 'Debug'
+#      Debug BMS:
+#        Configuration: 'Debug BMS'
+#      Debug 2013:
+#        Configuration: 'Debug 2013'
+#      Debug OE:
+#        Configuration: 'Debug OE'
+#      Debug P2:
+#        Configuration: 'Debug P2'
+#      Release:
+        Configuration: 'Release'
+#      Release BMS:
+        Configuration: 'Release BMS'
+#      Release 2013:
+        Configuration: 'Release 2013'
+#      Release OE:
+        Configuration: 'Release OE'
+#      Release P2:
+        Configuration: 'Release P2'
+steps:
+- script: |
+    git submodule update --init --recursive
+    cd ..
+    git clone --depth 1 -b %SDK% https://github.com/alliedmodders/hl2sdk.git
+    mkdir hl2sdk\utils\SourcePauseTool
+    xcopy SourcePauseTool hl2sdk\utils\SourcePauseTool /EH
+    cd hl2sdk\utils\SourcePauseTool
+  displayName: 'Setup'
+
+- task: VSBuild@1
+  displayName: Build
+  inputs:
+    solution: '..\hl2sdk\utils\SourcePauseTool\spt.sln'
+    configuration: %Configuration%
+    maximumCpuCount: true
+
+- script: move "%Configuration%\spt*.dll" %Build.ArtifactStagingDirectory%
+  displayName: Move spt*.dll to %Build.ArtifactStagingDirectory%
+
+- publish: spt*.dll
