@@ -24,15 +24,15 @@ jobs:
 #        Configuration: 'Debug OE'
 #      Debug P2:
 #        Configuration: 'Debug P2'
-#      Release:
+      Release:
         Configuration: 'Release'
-#      Release BMS:
+      Release BMS:
         Configuration: 'Release BMS'
-#      Release 2013:
+      Release 2013:
         Configuration: 'Release 2013'
-#      Release OE:
+      Release OE:
         Configuration: 'Release OE'
-#      Release P2:
+      Release P2:
         Configuration: 'Release P2'
 steps:
 - script: |
